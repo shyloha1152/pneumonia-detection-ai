@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PneumoScan AI | Advanced Medical Diagnostics</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Roboto+Mono&display=swap" rel="stylesheet">
+</head>
+<body class="dark-theme">
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="brand">
+                <span class="logo">⚕️</span>
+                <h1>PneumoScan AI</h1>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <div class="nav-item active" data-view="dashboard">
+                    <span class="icon">📊</span> Dashboard
+                </div>
+                <div class="nav-item" data-view="history">
+                    <span class="icon">📜</span> History
+                </div>
+                <div class="nav-item" data-view="settings">
+                    <span class="icon">⚙️</span> Settings
+                </div>
+            </nav>
+
+            <div class="sidebar-footer">
+                <p>v2.2.0-stable</p>
+                <small>Research & Triage Only</small>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="main-header">
+                <div class="header-left">
+                    <p class="greeting" id="greetingText">Welcome, Specialist</p>
+                    <h2 class="view-title">Medical Imaging Dashboard</h2>
+                </div>
+                <div class="header-right">
+                    <div class="status-indicator">
+                        <span class="dot pulse"></span> API Active
+                    </div>
+                </div>
+            </header>
+
+            <!-- Dashboard View -->
+            <section id="dashboardView" class="view active">
+                <div class="grid-container">
+                    <!-- Patient Intake Form -->
+                    <div class="card glass">
+                        <div class="card-header">
+                            <h3>👤 Clinical Patient Admission</h3>
+                        </div>
+                        <form id="patientForm" class="patient-form">
+                            <div class="form-header-small">Primary Identification</div>
+                            <div class="input-group">
+                                <span class="input-icon">🆔</span>
+                                <input type="text" id="patientName" placeholder="Patient Full Name" required>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="input-group" style="flex: 1;">
+                                    <span class="input-icon">📅</span>
+                                    <input type="number" id="patientAge" placeholder="Age" required>
+                                </div>
+                                <div class="input-group" style="flex: 1;">
+                                    <span class="input-icon">🧬</span>
+                                    <select id="patientGender" required>
+                                        <option value="">Gender</option>
+                                        <option value="Male">Male</option>
+                                        <option value="Female">Female</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-header-small">Medical Indicators</div>
+                            <div class="form-row">
+                                <div class="input-group" style="flex: 1;">
+                                    <span class="input-icon">🅰️</span>
+                                    <select id="patientBlood">
+                                        <option value="">Blood Type</option>
+                                        <option value="A+">A+</option>
+                                        <option value="A-">A-</option>
+                                        <option value="B+">B+</option>
+                                        <option value="B-">B-</option>
+                                        <option value="O+">O+</option>
+                                        <option value="O-">O-</option>
+                                        <option value="AB+">AB+</option>
+                                        <option value="AB-">AB-</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-header-small">Reported Symptoms</div>
+                            <div class="checkbox-group">
+                                <label class="check-item"><input type="checkbox" value="Cough"> Cough</label>
+                                <label class="check-item"><input type="checkbox" value="Fever"> Fever</label>
+                                <label class="check-item"><input type="checkbox" value="Dyspnea"> Dyspnea</label>
+                                <label class="check-item"><input type="checkbox" value="Chest Pain"> Chest Pain</label>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Scan Upload -->
+                    <div class="card glass">
+                        <div class="card-header">
+                            <h3>📂 Chest X-Ray Upload</h3>
+                        </div>
+                        <div class="upload-area" id="dropZone">
+                            <div class="upload-icon">📤</div>
+                            <p>Drag & drop or <span class="highlight">browse</span></p>
+                            <small>Supports JPEG, PNG (Max 5MB)</small>
+                            <input type="file" id="fileInput" hidden accept=".jpg,.jpeg,.png">
+                        </div>
+                        <div id="fileInfo" class="file-info hidden">
+                            <span id="fileName">image.jpg</span>
+                            <button id="cancelFile" class="btn-icon">×</button>
+                        </div>
+                        <button id="analyzeBtn" class="btn btn-primary btn-full mt-10" disabled>
+                            <span class="btn-text">🚀 Run AI Analysis</span>
+                            <div class="loader hidden"></div>
+                        </button>
+                    </div>
+
+                    <!-- Results Section -->
+                    <div id="resultsSection" class="full-width hidden">
+                        <div class="metrics-row">
+                            <div class="metric-card glass">
+                                <span class="m-label">Classification</span>
+                                <span class="m-value" id="resPrediction">Normal</span>
+                            </div>
+                            <div class="metric-card glass">
+                                <span class="m-label">Confidence</span>
+                                <span class="m-value" id="resConfidence">0.0%</span>
+                            </div>
+                            <div class="metric-card glass">
+                                <span class="m-label">Severity</span>
+                                <span class="m-value" id="resSeverity">None</span>
+                            </div>
+                        </div>
+
+                        <div class="image-comparison">
+                            <div class="img-box card glass">
+                                <h4>🩻 Original X-Ray</h4>
+                                <img id="originalImg" src="" alt="X-Ray">
+                            </div>
+                            <div class="img-box card glass">
+                                <h4>🔥 Grad-CAM Heatmap</h4>
+                                <img id="heatmapImg" src="" alt="Heatmap">
+                            </div>
+                        </div>
+
+                        <div class="card glass full-width">
+                            <h3>📊 Diagnostic Confidence Trend</h3>
+                            <div style="height: 300px;">
+                                <canvas id="confidenceChart"></canvas>
+                            </div>
+                        </div>
+
+                        <div class="analysis-details">
+                            <div class="card glass">
+                                <h3>🔬 AI Morphological Insights</h3>
+                                <div id="insightsList" class="insight-list"></div>
+                            </div>
+                            <div class="card glass">
+                                <h3>📋 Recommendations</h3>
+                                <div id="recsList" class="rec-list"></div>
+                            </div>
+                        </div>
+
+                        <div class="actions">
+                            <button id="downloadBtn" class="btn btn-secondary">📄 Download Full Report</button>
+                            <button id="resetBtn" class="btn btn-ghost">🔄 New Analysis</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- History View -->
+            <section id="historyView" class="view">
+                <div class="card glass">
+                    <h3>Recent Analyses</h3>
+                    <table class="history-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Patient</th>
+                                <th>Result</th>
+                                <th>Confidence</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="historyBody"></tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+
+        <!-- Chatbot -->
+        <div class="chatbot-floating" id="chatbotToggle"><span class="cb-icon">💬</span></div>
+
+        <div class="chatbot-window hidden" id="chatbotWindow">
+            <div class="cb-header"><h3>Medical AI Assistant</h3><button id="closeChat">×</button></div>
+            <div class="cb-body" id="chatBody"></div>
+            <div class="cb-footer">
+                <input type="text" id="chatInput" placeholder="Ask about pneumonia...">
+                <button id="sendMessage">➤</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="script.js?v=2.2"></script>
+</body>
+</html>
